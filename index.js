@@ -1,9 +1,12 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const express = require('express');
+const cors = require('cors');
 const { next } = require('cheerio/lib/api/traversing');
 
 const OurApp = express();
+OurApp.use(express.urlencoded({extended : false}));
+OurApp.use(cors());
 
 // function which gets the data and returns object of data
 const getData = async function(url){
