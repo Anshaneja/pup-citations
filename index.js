@@ -12,7 +12,7 @@ OurApp.use(cors());
 const getData = async function(url){
     
     // tableinfo = [ [citations_all , citations_since 2016] , [hindex_all, hindex_since2016 ] , [i10index_all , i10index_since2016] ]
-    let tableinfo = [ [1,2],[1,2],[1,2]];
+    let tableinfo = [ [0,0],[0,0],[0,0]];
 
     // graphinfo = [ [ year , no_of_citations ] , ... ]
     let graphinfo = [];
@@ -26,6 +26,7 @@ const getData = async function(url){
 
         // uses cheerio function to select name from html
         const name = $("#gsc_prf_in").text();
+        const photoUrl = $("#gsc_prf_pup-img").attr("src");
 
         // Selects and Traverses the table data and saves data into an array 'table info'
         $("#gsc_rsb_st tbody").children().each((index, elem) => {
@@ -37,19 +38,45 @@ const getData = async function(url){
 
         // Traverses graph data 'year' and add it to the array 'graphinfo
         $(".gsc_md_hist_b .gsc_g_t").each( (index, elem) => {
-            graphinfo.push([$(elem).text()])
+            graphinfo.push([$(elem).text(),0])
         })
+
+
+        total = graphinfo.length;
         // Traverses no. of citations in that particular year and saves it to array
-        $(".gsc_g_al").each((index,elem) => {
-            graphinfo[index].push($(elem).text())
+        $(".gsc_g_a").each((index,elem) => {
+
+            //Exceptional case : When no. of citation in any year is zero, then its html element is not present.
+            // In this case, we match the correct values by using z-index of element
+            if ( $(".gsc_g_a").length !== total){
+                //gets the string of style attribute
+                var str = $(elem).attr("style");
+                // slices the last two characters of the string, example: '10' or ':8'
+                var x = str.slice(-2,);
+                //if x is ':8', then it becomes integer 8
+                if(isNaN(x)){
+                    x = parseInt(x[1]);
+                }
+                else{
+                    x = parseInt(x);
+                }
+                // adds the value to its correct index
+                graphinfo[total - x][1] = $(elem).text();
+            }
+            // normal case
+            else{
+                graphinfo[index][1] = $(elem).text();
+            }
         })
 
         console.log(graphinfo);
         console.log(tableinfo);
 
+        
         // returns data object
         return ({
             name : name,
+            photoUrl : photoUrl,
             tableData : tableinfo,
             graphData : graphinfo
         })
