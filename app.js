@@ -99,10 +99,16 @@ const getData = async function(id){
 // Params   - id
 // Body    - none
 OurApp.get('/user/:id', async(req,res) => {
-    const data = await getData(req.params.id);
-    console.log('express code continues');
-    console.log(data);
-    return res.json(data);
+    try{
+        const data = await getData(req.params.id);
+        console.log('express code continues');
+        console.log(data);
+        return res.json(data);
+    }catch(error){
+        console.log(error);
+        next(error);
+    }
+
 });
 
 OurApp.get('/', (req,res) => {
