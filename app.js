@@ -110,5 +110,5 @@ OurApp.get('/', (req,res) => {
 
 
 
-OurApp.listen(4000, () => console.log("Server is running"));
+OurApp.listen(process.env.PORT || 5000, () => console.log("Server is running"));
 
