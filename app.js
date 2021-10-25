@@ -9,7 +9,7 @@ OurApp.use(express.urlencoded({extended : false}));
 OurApp.use(cors());
 
 // function which gets the data and returns object of data
-const getData = async function(url){
+const getData = async function(id){
     
     // tableinfo = [ [citations_all , citations_since 2016] , [hindex_all, hindex_since2016 ] , [i10index_all , i10index_since2016] ]
     let tableinfo = [ [0,0],[0,0],[0,0]];
@@ -17,6 +17,8 @@ const getData = async function(url){
     // graphinfo = [ [ year , no_of_citations ] , ... ]
     let graphinfo = [];
 
+    const photoUrl = "https://scholar.googleusercontent.com/citations?view_op=view_photo&user=" + id;
+    const url = 'https://scholar.google.com/citations?user=' + id + '&hl=en';
     try{
         // gets the html data from the url
         const response = await axios.get(url);
@@ -26,7 +28,7 @@ const getData = async function(url){
 
         // uses cheerio function to select name from html
         const name = $("#gsc_prf_in").text();
-        const photoUrl = $("#gsc_prf_pup-img").attr("src");
+        //const photoUrl = $("#gsc_prf_pup-img").attr("src");
 
         // Selects and Traverses the table data and saves data into an array 'table info'
         $("#gsc_rsb_st tbody").children().each((index, elem) => {
@@ -38,7 +40,7 @@ const getData = async function(url){
 
         // Traverses graph data 'year' and add it to the array 'graphinfo
         $(".gsc_md_hist_b .gsc_g_t").each( (index, elem) => {
-            graphinfo.push([$(elem).text(),0])
+            graphinfo.push([parseInt($(elem).text()),0])
         })
 
 
@@ -61,11 +63,11 @@ const getData = async function(url){
                     x = parseInt(x);
                 }
                 // adds the value to its correct index
-                graphinfo[total - x][1] = $(elem).text();
+                graphinfo[total - x][1] = parseInt($(elem).text());
             }
             // normal case
             else{
-                graphinfo[index][1] = $(elem).text();
+                graphinfo[index][1] = parseInt($(elem).text());
             }
         })
 
@@ -76,9 +78,9 @@ const getData = async function(url){
         // returns data object
         return ({
             name : name,
-            photoUrl : photoUrl,
             tableData : tableinfo,
-            graphData : graphinfo
+            graphData : graphinfo,
+            photoUrl : photoUrl,
         })
     }
     // catches and logs error if any
@@ -97,8 +99,7 @@ const getData = async function(url){
 // Params   - id
 // Body    - none
 OurApp.get('/user/:id', async(req,res) => {
-    const url = 'https://scholar.google.com/citations?user=' + req.params.id + '&hl=en';
-    const data = await getData(url);
+    const data = await getData(req.params.id);
     console.log('express code continues');
     console.log(data);
     return res.json(data);
