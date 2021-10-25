@@ -95,7 +95,7 @@ const getData = async function(url){
 // Access   - Public
 // Method   - GET
 // Params   - id
-// Body     - none
+// Body    - none
 OurApp.get('/user/:id', async(req,res) => {
     const url = 'https://scholar.google.com/citations?user=' + req.params.id + '&hl=en';
     const data = await getData(url);
@@ -107,6 +107,8 @@ OurApp.get('/user/:id', async(req,res) => {
 OurApp.get('/', (req,res) => {
     return res.json({ message: "Server is working!!!!!!" });
 });
+
+
 
 OurApp.listen(4000, () => console.log("Server is running"));
 
