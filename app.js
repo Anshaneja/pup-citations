@@ -28,7 +28,6 @@ const getData = async function(id){
 
         // uses cheerio function to select name from html
         const name = $("#gsc_prf_in").text();
-        //const photoUrl = $("#gsc_prf_pup-img").attr("src");
 
         // Selects and Traverses the table data and saves data into an array 'table info'
         $("#gsc_rsb_st tbody").children().each((index, elem) => {
@@ -41,13 +40,12 @@ const getData = async function(id){
         // Traverses graph data 'year' and add it to the array 'graphinfo
         $(".gsc_md_hist_b .gsc_g_t").each( (index, elem) => {
             graphinfo.push([parseInt($(elem).text()),0])
-        })
+        });
 
 
-        total = graphinfo.length;
+        const total = graphinfo.length;
         // Traverses no. of citations in that particular year and saves it to array
         $(".gsc_g_a").each((index,elem) => {
-
             //Exceptional case : When no. of citation in any year is zero, then its html element is not present.
             // In this case, we match the correct values by using z-index of element
             if ( $(".gsc_g_a").length !== total){
@@ -82,9 +80,7 @@ const getData = async function(id){
             graphData : graphinfo,
             photoUrl : photoUrl,
         })
-    }
-    // catches and logs error if any
-    catch (error){
+    }catch (error){
         console.log(error);
         next(error);
     }
