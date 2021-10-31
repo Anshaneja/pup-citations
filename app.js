@@ -82,7 +82,6 @@ const getData = async function(id){
         })
     }catch (error){
         console.log(error);
-        next(error);
     }
         
 }
