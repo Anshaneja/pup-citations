@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios').default;
 const cheerio = require('cheerio');
 const express = require('express');
 const cors = require('cors');
@@ -44,11 +44,12 @@ const getData = async function(id){
 
 
         const total = graphinfo.length;
+        const Rlength = console.log($(".gsc_md_hist_b").children(" a ").length);
         // Traverses no. of citations in that particular year and saves it to array
         $(".gsc_g_a").each((index,elem) => {
             //Exceptional case : When no. of citation in any year is zero, then its html element is not present.
             // In this case, we match the correct values by using z-index of element
-            if ( $(".gsc_g_a").length !== total){
+            if ( Rlength !== total){
                 //gets the string of style attribute
                 var str = $(elem).attr("style");
                 // slices the last two characters of the string, example: '10' or ':8'
@@ -68,9 +69,6 @@ const getData = async function(id){
                 graphinfo[index][1] = parseInt($(elem).text());
             }
         })
-
-        console.log(graphinfo);
-        console.log(tableinfo);
 
         
         // returns data object
@@ -98,7 +96,6 @@ OurApp.get('/user/:id', async(req,res) => {
     try{
         const data = await getData(req.params.id);
         console.log('express code continues');
-        console.log(data);
         return res.json(data);
     }catch(error){
         console.log(error);
