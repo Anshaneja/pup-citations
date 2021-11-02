@@ -44,7 +44,7 @@ const getData = async function(id){
 
 
         const total = graphinfo.length;
-        const Rlength = console.log($(".gsc_md_hist_b").children(" a ").length);
+        const Rlength = $(".gsc_md_hist_b").children(" a ").length; 
         // Traverses no. of citations in that particular year and saves it to array
         $(".gsc_g_a").each((index,elem) => {
             //Exceptional case : When no. of citation in any year is zero, then its html element is not present.
